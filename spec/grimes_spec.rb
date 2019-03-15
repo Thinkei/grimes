@@ -5,7 +5,22 @@ describe Grimes do
     expect(Grimes::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    expect(false).to eq(true)
+  describe '#configure' do
+    let(:track_paths) { ['app/controller', 'app/model'] }
+    let(:ignore_paths) { ['app/views/remove'] }
+    before do
+      Grimes.configure do |config|
+        config.track_controller = true
+        config.track_paths = track_paths
+        config.ignore_paths = ignore_paths
+      end
+    end
+
+    it 'stores config information' do
+      config = Grimes.config
+      expect(config.track_controller).to eq(true)
+      expect(config.track_paths).to eq(track_paths)
+      expect(config.ignore_paths).to eq(ignore_paths)
+    end
   end
 end
