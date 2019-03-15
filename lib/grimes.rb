@@ -1,5 +1,6 @@
 require 'grimes/version'
 require 'grimes/config'
+require 'grimes/railtie' if defined?(Rails)
 
 module Grimes
   class << self
