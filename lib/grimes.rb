@@ -1,3 +1,4 @@
+require 'grimes/version'
 require 'grimes/config'
 
 module Grimes
