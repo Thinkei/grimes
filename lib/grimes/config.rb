@@ -1,4 +1,4 @@
-module EhCodeTracking
+module Grimes
   class Config
 
   end
