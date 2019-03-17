@@ -1,4 +1,6 @@
 require 'grimes/config'
+require 'grimes/rails_extension_extractor'
+require 'grimes/message_bus/message_bus'
 
 module Grimes
   class << self
