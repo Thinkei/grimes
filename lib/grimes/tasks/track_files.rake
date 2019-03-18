@@ -5,7 +5,7 @@ namespace :grimes do
     ignore_files = config.ignore_paths.map { |path| Dir[path] }.flatten
     files_list = white_list_files - ignore_files
     track_data = {
-      files_list: files_list
+      files_list: files_list.sort
     }
     config.rake_task_block && config.rake_task_block.call(track_data)
   end

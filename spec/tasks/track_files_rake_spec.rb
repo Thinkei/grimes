@@ -15,12 +15,12 @@ describe 'grimes:track_files', type: :task do
   end
 
   context 'config track path' do
-    let(:files_list) { 
+    let(:files_list) do
       [
         "./spec/mock_track_files/white_list_files/white_list.text",
         "./spec/mock_track_files/ignore_files/ignore.text"
-      ]
-    }
+      ].sort
+    end
     it 'tracks all file in track paths' do
       Grimes.configure do |config|
         config.track_paths = ['./spec/mock_track_files/**/*.*']
@@ -33,11 +33,11 @@ describe 'grimes:track_files', type: :task do
   end
 
   context 'config ignore_paths' do
-    let(:files_list) { 
+    let(:files_list) do
       [
         "./spec/mock_track_files/white_list_files/white_list.text",
       ]
-    }
+    end
     it 'tracks all file in track paths' do
       Grimes.configure do |config|
         config.track_paths = ['./spec/mock_track_files/**/*.*']
