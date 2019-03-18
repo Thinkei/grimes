@@ -29,13 +29,13 @@ describe Grimes do
 
     it 'stores on_render_template and on_render_partial' do
       Grimes.configure do |config|
-        config.on_render_template = -> (template, layout) { mock_render_template_logic.call  }
-        config.on_render_partial = -> (template, layout) { mock_render_partial_logic.call }
+        config.render_template_block = -> (template, layout) { mock_render_template_logic.call  }
+        config.render_partial_block = -> (template, layout) { mock_render_partial_logic.call }
       end
 
-      expect(Grimes.config.on_render_partial).not_to be_nil
+      expect(Grimes.config.render_partial_block).not_to be_nil
       expect(mock_render_partial_logic).to receive(:call)
-      Grimes.config.on_render_partial.call(1, 2)
+      Grimes.config.render_partial_block.call(1, 2)
     end
   end
 end
