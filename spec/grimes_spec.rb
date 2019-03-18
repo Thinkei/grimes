@@ -8,11 +8,14 @@ describe Grimes do
   describe '#configure' do
     let(:track_paths) { ['app/controller', 'app/model'] }
     let(:ignore_paths) { ['app/views/remove'] }
+    let(:mock_render_template_logic) { double }
+    let(:mock_render_partial_logic) { double }
     before do
       Grimes.configure do |config|
         config.track_controller = true
         config.track_paths = track_paths
         config.ignore_paths = ignore_paths
+        config.namespace = 'mainapp'
       end
     end
 
@@ -21,6 +24,18 @@ describe Grimes do
       expect(config.track_controller).to eq(true)
       expect(config.track_paths).to eq(track_paths)
       expect(config.ignore_paths).to eq(ignore_paths)
+      expect(config.namespace).to eq('mainapp')
+    end
+
+    it 'stores on_render_template and on_render_partial' do
+      Grimes.configure do |config|
+        config.on_render_template = -> (template, layout) { mock_render_template_logic.call  }
+        config.on_render_partial = -> (template, layout) { mock_render_partial_logic.call }
+      end
+
+      expect(Grimes.config.on_render_partial).not_to be_nil
+      expect(mock_render_partial_logic).to receive(:call)
+      Grimes.config.on_render_partial.call(1, 2)
     end
   end
 end
