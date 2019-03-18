@@ -10,6 +10,7 @@ module Grimes
 
     def ignore_paths
       @ignore_paths || []
+    end
 
     def report_bug(error, params = {})
       bug_reporter.notify(error, params) if bug_reporter.present?
