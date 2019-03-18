@@ -5,8 +5,13 @@ module ActionView
 
     def render_template(event)
       begin
-        template_file = from_rails_root(event.payload[:identifier])
-        layout_file = from_rails_root(event.payload[:layout]) if event.payload[:layout]
+        template_file = event.payload[:identifier].sub(rails_root, EMPTY)
+        extension = Grimes::RailsExtensionExtractor.new(template_file).extract
+        layout_file = nil
+        if event.payload[:layout]
+          layout_file = event.payload[:layout]
+          layout_file = "app/views/#{layout_file}#{extension}"
+        end
         puts "Caught template: #{template_file}"
         puts "Caught layout: #{layout_file}" if layout_file
         original_render_template(event)
@@ -17,8 +22,13 @@ module ActionView
 
     def render_partial(event)
       begin
-        template_file = from_rails_root(event.payload[:identifier])
-        layout_file = from_rails_root(event.payload[:layout]) if event.payload[:layout]
+        template_file = event.payload[:identifier].sub(rails_root, EMPTY)
+        extension = Grimes::RailsExtensionExtractor.new(template_file).extract
+        layout_file = nil
+        if event.payload[:layout]
+          layout_file = event.payload[:layout]
+          layout_file = "app/views/#{layout_file}#{extension}"
+        end
         puts "Caught partial template: #{template_file}"
         puts "Caught layout: #{layout_file}" if layout_file
         original_render_partial(event)
