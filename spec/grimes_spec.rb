@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe Grimes do
-  it 'has a version number' do
-    expect(Grimes::VERSION).not_to be nil
-  end
-
   describe '#configure' do
     let(:track_paths) { ['app/controller', 'app/model'] }
     let(:ignore_paths) { ['app/views/remove'] }

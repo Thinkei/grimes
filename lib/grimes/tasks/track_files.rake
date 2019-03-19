@@ -1,12 +1,10 @@
+require 'rails'
+require 'grimes/files_list/coordinator'
+
 namespace :grimes do
   task track_files: :environment do
     config = Grimes.config
-    white_list_files = config.track_paths.map { |path| Dir[path] }.flatten
-    ignore_files = config.ignore_paths.map { |path| Dir[path] }.flatten
-    files_list = white_list_files - ignore_files
-    track_data = {
-      files_list: files_list.sort
-    }
-    config.rake_task_block && config.rake_task_block.call(track_data)
+    files = FilesList::Coordinator.new(config).files_list
+    config.rake_task_block && config.rake_task_block.call(files)
   end
 end

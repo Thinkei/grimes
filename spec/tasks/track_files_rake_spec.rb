@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'grimes:track_files', type: :task do
   let(:rake_task_block) { double }
-  let(:track_data) { { files_list: files_list } }
+  let(:track_data) { [ 'list' ] }
 
   it 'calls track block with the track files data' do
     Grimes.configure do |config|
@@ -14,38 +14,13 @@ describe 'grimes:track_files', type: :task do
     subject.execute
   end
 
-  context 'config track path' do
-    let(:files_list) do
-      [
-        "./spec/mock_track_files/white_list_files/white_list.text",
-        "./spec/mock_track_files/ignore_files/ignore.text"
-      ].sort
+  it 'calls FilesList::Coordinator to get files list' do
+    Grimes.configure do |config|
+      config.rake_task_block = rake_task_block
     end
-    it 'tracks all file in track paths' do
-      Grimes.configure do |config|
-        config.track_paths = ['./spec/mock_track_files/**/*.*']
-        config.ignore_paths = nil
-        config.rake_task_block = rake_task_block
-      end
-      expect(rake_task_block).to receive(:call).with(track_data)
-      subject.execute
-    end
-  end
-
-  context 'config ignore_paths' do
-    let(:files_list) do
-      [
-        "./spec/mock_track_files/white_list_files/white_list.text",
-      ]
-    end
-    it 'tracks all file in track paths' do
-      Grimes.configure do |config|
-        config.track_paths = ['./spec/mock_track_files/**/*.*']
-        config.ignore_paths = ['./spec/mock_track_files/ignore_files/**/*.*']
-        config.rake_task_block = rake_task_block
-      end
-      expect(rake_task_block).to receive(:call).with(track_data)
-      subject.execute
-    end
+    expect(rake_task_block).to receive(:call).with(track_data)
+    expect_any_instance_of(FilesList::Coordinator).to receive(:files_list)
+      .and_return(track_data)
+    subject.execute
   end
 end
