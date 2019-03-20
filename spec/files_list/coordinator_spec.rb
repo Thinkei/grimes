@@ -14,28 +14,29 @@ describe FilesList::Coordinator do
   context 'config track path' do
     let(:files_list) do
       [
-        "./spec/mock_track_files/white_list_files/white_list.text",
-        "./spec/mock_track_files/ignore_files/ignore.text"
-      ].sort
+        { path: "./spec/mock_track_files/white_list_files/white_list.text" },
+        { path: "./spec/mock_track_files/ignore_files/ignore.text" }
+      ]
     end
     let(:track_paths) { ['./spec/mock_track_files/**/*.*'] }
     let(:ignore_paths) { [] }
+
     it 'tracks all file in track paths' do
-      expect(subject.files_list.sort).to eq(files_list)
+      expect(subject.files_list).to match_array(files_list)
     end
   end
 
   context 'config ignore_paths' do
     let(:files_list) do
       [
-        "./spec/mock_track_files/white_list_files/white_list.text",
+        { path: "./spec/mock_track_files/white_list_files/white_list.text" },
       ]
     end
     let(:track_paths) { ['./spec/mock_track_files/**/*.*'] }
     let(:ignore_paths) { ['./spec/mock_track_files/ignore_files/**/*.*'] }
 
     it 'tracks all file in track paths except ignore paths' do
-      expect(subject.files_list.sort).to eq(files_list)
+      expect(subject.files_list).to match_array(files_list)
     end
   end
 end

@@ -20,6 +20,7 @@ module FilesList
     #   files_list: files_list.sort,
     #   controllers: controllers
     # }
+      files_list.map { |file| { path: file } }
     end
   end
 end
