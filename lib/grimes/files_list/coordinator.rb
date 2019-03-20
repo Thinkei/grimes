@@ -1,4 +1,6 @@
 require 'grimes/files_list/file_in_folder'
+require 'grimes/files_list/controller_list'
+require 'grimes/files_list/merge_controller_to_file'
 
 module FilesList
   class Coordinator
@@ -12,15 +14,12 @@ module FilesList
       white_list_files = FileInFolder.new(config.track_paths).get_files
       ignore_files = FileInFolder.new(config.ignore_paths).get_files
       files_list = white_list_files - ignore_files
-    # controllers = []
-    # if Rails.application
-    #   controllers = Rails.application.routes.routes.map(&:app).map { |a| a.instance_variable_get(:@defaults) }.compact.sort_by { |a| a[:controller] }
-    # end
-    # track_data = {
-    #   files_list: files_list.sort,
-    #   controllers: controllers
-    # }
-      files_list.map { |file| { path: file } }
+      files_list = files_list.map { |file| { path: file } }
+      if config.track_controller
+        controllers = ControllerList.new(config.rails_application).get_controllers
+        files_list = MergeControllerToFile.new(controllers, files_list).merge
+      end
+      files_list
     end
   end
 end
