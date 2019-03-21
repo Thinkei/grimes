@@ -26,6 +26,7 @@ module FilesList
       ignore_files = FileInFolder.new(config.ignore_paths).get_files
       files_list = white_list_files - ignore_files
       files_list = files_list.sort
+      files_list
     end
 
     def merge_controllers(files_list)
