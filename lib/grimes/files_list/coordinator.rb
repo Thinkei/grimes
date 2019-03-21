@@ -16,6 +16,7 @@ module FilesList
       white_list_files = FileInFolder.new(config.track_paths).get_files
       ignore_files = FileInFolder.new(config.ignore_paths).get_files
       files_list = white_list_files - ignore_files
+      files_list = files_list.sort
       files_list = files_list.map { |file| { path: file } }
       files_list = merge_controllers(files_list) if config.track_controller
       files_list

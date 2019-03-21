@@ -79,8 +79,8 @@ describe FilesList::Coordinator do
     end
     let(:files_list) do
       [
-        { path: "./spec/mock_track_files/white_list_files/white_list.text" },
-        { path: "./spec/mock_track_files/ignore_files/ignore.text" }
+        { path: "./spec/mock_track_files/ignore_files/ignore.text" },
+        { path: "./spec/mock_track_files/white_list_files/white_list.text" }
       ]
     end
 
