@@ -1,7 +1,9 @@
 require 'spec_helper'
 require 'grimes/files_list/file_in_folder'
 require 'grimes/files_list/merge_controller_to_file'
+require 'grimes/files_list/merge_grape_controller_to_file'
 require 'grimes/files_list/controller_list'
+require 'grimes/files_list/grape_controller_list'
 require 'grimes/config'
 
 describe FilesList::Coordinator do
@@ -90,7 +92,11 @@ describe FilesList::Coordinator do
     before do
       allow_any_instance_of(FilesList::ControllerList)
         .to receive(:get_controllers).and_return(controllers)
+      allow_any_instance_of(FilesList::GrapeControllerList)
+        .to receive(:get_controllers).and_return(controllers)
       allow_any_instance_of(FilesList::MergeControllerToFile)
+        .to receive(:merge).and_return(merge_results)
+      allow_any_instance_of(FilesList::MergeGrapeControllerToFile)
         .to receive(:merge).and_return(merge_results)
       allow(merge_service).to receive(:merge).and_return(merge_results)
     end
@@ -106,6 +112,13 @@ describe FilesList::Coordinator do
     it 'calls MergeControllerToFile with correct values' do
       expect(FilesList::MergeControllerToFile).to receive(:new)
         .with(controllers, files_list)
+        .and_return(merge_service)
+      expect(subject.files_list).to equal(merge_results)
+    end
+
+    it 'calls MergeControllerToFile with correct values' do
+      expect(FilesList::MergeGrapeControllerToFile).to receive(:new)
+        .with(controllers, merge_results)
         .and_return(merge_service)
       expect(subject.files_list).to equal(merge_results)
     end

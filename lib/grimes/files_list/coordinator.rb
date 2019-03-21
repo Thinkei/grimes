@@ -1,6 +1,8 @@
 require 'grimes/files_list/file_in_folder'
 require 'grimes/files_list/controller_list'
+require 'grimes/files_list/grape_controller_list'
 require 'grimes/files_list/merge_controller_to_file'
+require 'grimes/files_list/merge_grape_controller_to_file'
 
 module FilesList
   class Coordinator
@@ -17,7 +19,9 @@ module FilesList
       files_list = files_list.map { |file| { path: file } }
       if config.track_controller
         controllers = ControllerList.new(config.rails_application).get_controllers
+        grape_controllers = GrapeControllerList.new(config.grape_routes).get_controllers
         files_list = MergeControllerToFile.new(controllers, files_list).merge
+        files_list = MergeGrapeControllerToFile.new(grape_controllers, files_list).merge
       end
       files_list
     end
