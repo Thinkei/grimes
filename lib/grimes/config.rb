@@ -1,8 +1,8 @@
 module Grimes
   class Config
     attr_accessor :track_controller, :render_partial_block, :render_template_block,
-      :namespace, :rake_task_block, :bug_reporter, :track_grape, :grape_routes, :rails_application
-    attr_writer :track_paths, :ignore_paths
+      :namespace, :rake_task_block, :bug_reporter, :track_grape, :rails_application
+    attr_writer :track_paths, :ignore_paths, :grape_routes
 
     def track_paths
       @track_paths || ['./**/*.*']

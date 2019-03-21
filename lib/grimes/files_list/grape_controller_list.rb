@@ -10,7 +10,13 @@ module FilesList
 
     def get_controllers
       grape_routes.map do |route|
-        route.routes.map {|r| { controller: r.app.source.source_location.first, action: "#{r.request_method} #{r.path}"} }
+        route.routes
+          .map do |r|
+            {
+              controller: r.app.source.source_location.first,
+              action: "#{r.request_method} #{r.path}"
+            }
+        end
       end.flatten
     end
   end

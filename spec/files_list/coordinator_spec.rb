@@ -116,7 +116,7 @@ describe FilesList::Coordinator do
       expect(subject.files_list).to equal(merge_results)
     end
 
-    it 'calls MergeControllerToFile with correct values' do
+    it 'calls MergeGrapeControllerToFile with correct values' do
       expect(FilesList::MergeGrapeControllerToFile).to receive(:new)
         .with(controllers, merge_results)
         .and_return(merge_service)
