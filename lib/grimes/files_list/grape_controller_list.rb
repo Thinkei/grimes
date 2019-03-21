@@ -9,7 +9,7 @@ module FilesList
     end
 
     def get_controllers
-      grape_routes.map do |route|
+      grape_routes.map { |route|
         route.routes
           .map do |r|
             {
@@ -17,7 +17,7 @@ module FilesList
               action: "#{r.request_method} #{r.path}"
             }
         end
-      end.flatten
+      }.flatten
     end
   end
 end
