@@ -1,3 +1,5 @@
+require 'grape'
+
 module Grimes
   class GrapeTrackingMiddleware < Grape::Middleware::Base
     def before
