@@ -4,12 +4,22 @@ module Grimes
   class GrapeTrackingMiddleware < Grape::Middleware::Base
     def before
       route = self.env["api.endpoint"].routes.first
-      action = "#{route.request_method} #{route.path}"
-      source_location = route.app.source.source_location.first
+      action = get_controller_action(route)
+      source_location = get_controller_file_location(route)
       callback_block = Grimes.config.call_grape_controller_block
       callback_block && callback_block.call({ path: source_location, action: action })
     rescue StandardError => e
       p e.inspect
+    end
+
+    private
+
+    def get_controller_action(route)
+      "#{route.request_method} #{route.path}"
+    end
+
+    def get_controller_file_location(route)
+      route.app.source.source_location.first
     end
   end
 end
