@@ -1,4 +1,5 @@
 require 'grimes/config'
+require 'grimes/railtie' if defined?(Rails)
 require 'grimes/rails_extension_extractor'
 require 'grimes/message_bus/message_bus'
 
