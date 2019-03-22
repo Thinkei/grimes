@@ -8,7 +8,8 @@ module Grimes
       source_location = route.app.source.source_location.first
       callback_block = Grimes.config.call_grape_controller_block
       callback_block && callback_block.call({ path: source_location, action: action })
-    rescue
+    rescue StandardError => e
+      p e.inspect
     end
   end
 end
