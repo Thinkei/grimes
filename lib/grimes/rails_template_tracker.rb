@@ -6,16 +6,11 @@ module ActionView
     def render_template(event)
       begin
         template_file = event.payload[:identifier].sub(rails_root, EMPTY)
-        extension = Grimes::RailsExtensionExtractor.new(template_file).extract
-        layout_file = nil
-        if event.payload[:layout]
-          layout_file = event.payload[:layout]
-          layout_file = "app/views/#{layout_file}#{extension}"
-        end
-        puts "Caught template: #{template_file}"
-        puts "Caught layout: #{layout_file}" if layout_file
+        callback_block = Grimes.config.render_template_block
+        callback_block&.call(file_path: template_file)
         original_render_template(event)
-      rescue StandardError
+      rescue StandardError => error
+        Grimes.config.report_bug(error)
         original_render_template(event)
       end
     end
@@ -23,18 +18,32 @@ module ActionView
     def render_partial(event)
       begin
         template_file = event.payload[:identifier].sub(rails_root, EMPTY)
-        extension = Grimes::RailsExtensionExtractor.new(template_file).extract
-        layout_file = nil
-        if event.payload[:layout]
-          layout_file = event.payload[:layout]
-          layout_file = "app/views/#{layout_file}#{extension}"
-        end
-        puts "Caught partial template: #{template_file}"
-        puts "Caught layout: #{layout_file}" if layout_file
+        callback_block = Grimes.config.render_partial_block
+        callback_block&.call(file: template_file)
         original_render_partial(event)
-      rescue StandardError
+      rescue StandardError => error
+        Grimes.config.report_bug(error)
         original_render_partial(event)
       end
     end
   end
+
+  class TemplateRenderer
+    alias original_find_layout find_layout
+
+    private
+
+    def find_layout(layout, keys)
+      begin
+        layout = with_layout_format { resolve_layout(layout, keys) }
+        callback_block = Grimes.config.render_template_block
+        callback_block&.call(file: layout.inspect)
+        layout
+      rescue StandardError => error
+        Grimes.config.report_bug(error)
+        original_find_layout(layout, keys)
+      end
+    end
+  end
 end
+
