@@ -20,7 +20,8 @@ module Grimes
             track_data
             sleep throttle_time
           rescue StandardError => e
-            Grimes.config.report_bug(error)
+            p e
+            Grimes.config.report_bug(e)
           end
         end
       end
