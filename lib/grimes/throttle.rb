@@ -1,5 +1,3 @@
-require 'thread'
-
 module Grimes
   class Throttle
     attr_reader :throttle_time, :track_block, :all_paths, :mutex
@@ -53,7 +51,7 @@ module Grimes
           @all_paths = Hash.new(0)
         end
       rescue StandardError => e
-        Grimes.config.report_bug(error)
+        Grimes.config.report_bug(e)
       end
     end
   end
