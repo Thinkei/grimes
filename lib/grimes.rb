@@ -1,4 +1,5 @@
 require 'grimes/config'
+require 'grimes/throttle'
 require 'grimes/railtie' if defined?(Rails)
 
 module Grimes

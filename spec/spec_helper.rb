@@ -2,6 +2,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'grimes'
 require 'active_support/concern'
 require 'rake'
+require 'byebug'
 
 # https://www.eliotsykes.com/test-rails-rake-tasks-with-rspec
 module TaskExampleGroup
