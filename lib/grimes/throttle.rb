@@ -26,10 +26,13 @@ module Grimes
       thread.abort_on_exception = true
     end
 
-    def track(path)
+    def track(path, extra_data)
       mutex.synchronize do
-        all_paths[path] ||= 0
-        all_paths[path] += 1
+        all_paths[path] ||= { count: 0 }
+        if all_paths[path][:count] == 0 && !extra_data.empty?
+          all_paths[path][:extra_data] = extra_data
+        end
+        all_paths[path][:count] += 1
       end
     end
 
@@ -38,8 +41,8 @@ module Grimes
       @@instance.start
     end
 
-    def self.track(path)
-      @@instance.track(path)
+    def self.track(path, extra_data = {})
+      @@instance.track(path, extra_data)
     end
 
     private
@@ -48,7 +51,7 @@ module Grimes
       begin
         track_block&.call(all_paths)
         mutex.synchronize do
-          @all_paths = Hash.new(0)
+          @all_paths = {}
         end
       rescue StandardError => e
         Grimes.config.report_bug(e)
