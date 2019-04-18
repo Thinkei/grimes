@@ -1,5 +1,6 @@
 require 'grimes/config'
 require 'grimes/throttle'
+require 'grimes/log_formatter'
 require 'grimes/railtie' if defined?(Rails)
 require 'grimes/grape_tracking_middleware'
 
