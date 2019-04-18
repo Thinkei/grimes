@@ -45,7 +45,9 @@ module Grimes
       @@instance.track(path, extra_data)
     end
 
-    private
+    def self.flush_buffer
+      @@instance.track_data
+    end
 
     def track_data
       begin
