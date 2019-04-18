@@ -24,6 +24,7 @@ module Grimes
 
     def self.view_path(data)
       path = data[:file]
+      path
     end
 
     private
@@ -34,7 +35,7 @@ module Grimes
         type: event_type,
         service: Grimes.config.namespace,
         data: data,
-      }
+      }.to_json
     end
   end
 end
