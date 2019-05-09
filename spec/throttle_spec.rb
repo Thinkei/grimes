@@ -25,6 +25,7 @@ describe Grimes::Throttle do
   end
 
   it 'reset track data after call track data' do
+    sleep 1
     described_class.start(time, track_block)
     described_class.track('file_path')
     sleep 1
@@ -32,6 +33,20 @@ describe Grimes::Throttle do
     sleep 1
     expect(track_log[0]).to eq({ 'file_path' => { count: 1 } })
     expect(track_log[1]).to eq({ 'file_path' => { count: 1 } })
+  end
+
+  it 'works in many thread case' do
+    described_class.start(time, track_block)
+    threads = (1..3).map do
+      Thread.new do
+        described_class.track('file_path')
+        # Sleep to keep the thread alive until we run the collect data method.
+        # On prod, the thread will keep alive in thread poll so don't worry about it
+        sleep 2
+      end
+    end
+    sleep 1
+    expect(track_log[0]).to eq({ 'file_path' => { count: 3 } })
   end
 
   it 'keeps extra data' do
