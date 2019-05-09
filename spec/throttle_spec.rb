@@ -37,7 +37,7 @@ describe Grimes::Throttle do
 
   it 'works in many thread case' do
     described_class.start(time, track_block)
-    threads = (1..3).map do
+    (1..3).map do
       Thread.new do
         described_class.track('file_path')
         # Sleep to keep the thread alive until we run the collect data method.
