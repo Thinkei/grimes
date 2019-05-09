@@ -1,6 +1,8 @@
+require 'grimes/utils/merge_file_path'
+
 module Grimes
   class Throttle
-    attr_reader :throttle_time, :track_block
+    attr_reader :throttle_time, :track_block, :thread
 
     def initialize(throttle_time, track_block)
       @throttle_time = throttle_time
@@ -67,24 +69,11 @@ module Grimes
     def calculate_all_paths_from_threads
       all_paths = {}
       Thread.list.each do |thread|
-        paths = thread[:grimes_all_paths]
-        all_paths = merge_paths(all_paths, paths)
+        # prevent the case some thread change grimes_all_paths durring our loop
+        paths = thread[:grimes_all_paths]&.dup
+        all_paths = Utils::MergeFilePath.merge_paths(all_paths, paths)
       end
       all_paths
-    end
-
-    def merge_paths(origin, paths)
-      return origin unless paths
-      new_value = paths.inject(origin) do |result, (key, value)|
-        if result[key]
-          path_count = value[:count] || 0
-          result[key][:count] += path_count
-        else
-          result[key] = value
-        end
-        result
-      end
-      new_value
     end
   end
 end
