@@ -28,30 +28,30 @@ module Grimes
 
     def track(path, extra_data)
       mutex.synchronize do
-        all_paths[path] ||= { count: 0 }
-        if all_paths[path][:count] == 0 && !extra_data.empty?
-          all_paths[path][:extra_data] = extra_data
+        @all_paths[path] ||= { count: 0 }
+        if @all_paths[path][:count] == 0 && !extra_data.empty?
+          @all_paths[path][:extra_data] = extra_data
         end
-        all_paths[path][:count] += 1
+        @all_paths[path][:count] += 1
       end
     end
 
     def self.start(time, track_block)
-      @@instance = new(time, track_block)
-      @@instance.start
+      @instance = new(time, track_block)
+      @instance.start
     end
 
     def self.track(path, extra_data = {})
-      @@instance.track(path, extra_data)
+      @instance.track(path, extra_data)
     end
 
     def self.flush_buffer
-      @@instance.track_data
+      @instance.track_data
     end
 
     def track_data
       begin
-        track_block&.call(all_paths)
+        track_block&.call(@all_paths)
         mutex.synchronize do
           @all_paths = {}
         end
