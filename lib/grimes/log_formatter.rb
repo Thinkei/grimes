@@ -23,7 +23,7 @@ module Grimes
     end
 
     def self.view_path(data)
-      path = data[:file]
+      path = data[:file_path]
       path
     end
 
