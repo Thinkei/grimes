@@ -7,7 +7,7 @@ module Grimes
       action = get_controller_action(route)
       source_location = get_controller_file_location(route)
       callback_block = Grimes.config.call_grape_controller_block
-      callback_block&.call({ path: source_location, action: action })
+      callback_block&.call({ file_path: source_location, action_name: action })
     rescue StandardError => e
       p e.inspect
     end

@@ -17,11 +17,11 @@ describe FilesList::Coordinator do
   let(:track_paths) { ['./spec/mock_track_files/**/*.*'] }
   let(:ignore_paths) { [] }
 
-  context 'config track path' do
+  context 'config track file_path' do
     let(:files_list) do
       [
-        { path: "./spec/mock_track_files/white_list_files/white_list.text" },
-        { path: "./spec/mock_track_files/ignore_files/ignore.text" }
+        { file_path: "./spec/mock_track_files/white_list_files/white_list.text" },
+        { file_path: "./spec/mock_track_files/ignore_files/ignore.text" }
       ]
     end
 
@@ -33,7 +33,7 @@ describe FilesList::Coordinator do
   context 'config ignore_paths' do
     let(:files_list) do
       [
-        { path: "./spec/mock_track_files/white_list_files/white_list.text" },
+        { file_path: "./spec/mock_track_files/white_list_files/white_list.text" },
       ]
     end
     let(:track_paths) { ['./spec/mock_track_files/**/*.*'] }
@@ -55,8 +55,8 @@ describe FilesList::Coordinator do
     end
     let(:files_list) do
       [
-        { path: "./spec/mock_track_files/white_list_files/white_list.text" },
-        { path: "./spec/mock_track_files/ignore_files/ignore.text" }
+        { file_path: "./spec/mock_track_files/white_list_files/white_list.text" },
+        { file_path: "./spec/mock_track_files/ignore_files/ignore.text" }
       ]
     end
 
@@ -79,8 +79,8 @@ describe FilesList::Coordinator do
     end
     let(:files_list) do
       [
-        { path: "./spec/mock_track_files/ignore_files/ignore.text" },
-        { path: "./spec/mock_track_files/white_list_files/white_list.text" }
+        { file_path: "./spec/mock_track_files/ignore_files/ignore.text" },
+        { file_path: "./spec/mock_track_files/white_list_files/white_list.text" }
       ]
     end
 
