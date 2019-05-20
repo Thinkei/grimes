@@ -50,7 +50,7 @@ module FilesList
     def find_controller_for_file(file)
       grouped_controllers.find do |controller|
         controller_path = "controllers/#{controller[:controller]}_controller"
-        file[:path].include?(controller_path)
+        file[:file_path].include?(controller_path)
       end
     end
   end

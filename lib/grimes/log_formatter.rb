@@ -13,7 +13,7 @@ module Grimes
     end
 
     def self.grape_controller_path(data)
-      path = "#{relative_path(data[:path])} #{data[:action]}"
+      path = "#{relative_path(data[:file_path])} #{data[:action_name]}"
       path
     end
 

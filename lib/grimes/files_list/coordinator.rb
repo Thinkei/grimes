@@ -14,7 +14,7 @@ module FilesList
 
     def files_list
       files_list = files_in_folder
-      files_list = files_list.map { |file| { path: file } }
+      files_list = files_list.map { |file| { file_path: file } }
       files_list = merge_controllers(files_list) if config.track_controller
       files_list
     end
