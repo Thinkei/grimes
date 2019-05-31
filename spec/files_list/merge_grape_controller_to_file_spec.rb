@@ -11,28 +11,28 @@ describe FilesList::MergeGrapeControllerToFile do
   end
   let(:files) do
     [
-      {:path => "app/controllers/model_1_controller.rb"},
-      {:path => "app/controllers/model_2_controller.rb"},
-      {:path => "app/controllers/model_3_controller.rb"},
+      {:file_path => "app/controllers/model_1_controller.rb"},
+      {:file_path => "app/controllers/model_2_controller.rb"},
+      {:file_path => "app/controllers/model_3_controller.rb"},
     ]
   end
   let(:expected_result) do
     [
       {
-        :path => "app/controllers/model_1_controller.rb",
+        :file_path => "app/controllers/model_1_controller.rb",
         :extra => {
           controller: true,
           actions: ['action_1', 'action_2']
         }
       },
       {
-        :path => "app/controllers/model_2_controller.rb",
+        :file_path => "app/controllers/model_2_controller.rb",
         :extra => {
           controller: true,
           actions: ['action_3']
         }
       },
-      { :path => "app/controllers/model_3_controller.rb" }
+      { :file_path => "app/controllers/model_3_controller.rb" }
     ]
   end
   let(:subject) { described_class.new(controllers, files) }
