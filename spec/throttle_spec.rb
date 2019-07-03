@@ -13,10 +13,23 @@ describe Grimes::Throttle do
 
   after { described_class.flush_buffer }
 
-  it 'can start and call track_block every "time" second pass' do
-    described_class.start(time, track_block)
-    sleep 0.2
-    expect(track_log.size >= 2).to be_truthy
+  context 'track is call' do
+    it 'can start and call track_block every "time" second pass' do
+      described_class.start(time, track_block)
+      described_class.track('file_path_1')
+      sleep 0.1
+      described_class.track('file_path_1')
+      sleep 0.1
+      expect(track_log.size >= 2).to be_truthy
+    end
+  end
+
+  context 'nothing tracked' do
+    it 'can start and call track_block every "time" second pass' do
+      described_class.start(time, track_block)
+      sleep 0.2
+      expect(track_log.size).to eq(0)
+    end
   end
 
   it 'track path info and call track_block with that data' do
@@ -73,5 +86,16 @@ describe Grimes::Throttle do
       Utils::MergeFilePath.merge_paths(rs, value)
     end
     expect(log_result).to eq({ 'file_path' => { count: 1, extra_data: { data: 1 }} })
+  end
+
+  describe 'passing files limit per parts' do
+    it 'breaks files list to smallers parts' do
+      described_class.start(time, track_block, 2)
+      10.times.each do |i|
+        described_class.track("file_path_#{i}", { data: 1 })
+      end
+      sleep 0.2
+      expect(track_log.compact.count).to eq(5)
+    end
   end
 end

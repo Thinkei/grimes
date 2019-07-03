@@ -2,11 +2,12 @@ require 'grimes/utils/merge_file_path'
 
 module Grimes
   class Throttle
-    attr_reader :throttle_time, :track_block, :thread
+    attr_reader :throttle_time, :track_block, :thread, :limit
 
-    def initialize(throttle_time, track_block)
+    def initialize(throttle_time, track_block, limit)
       @throttle_time = throttle_time
       @track_block = track_block
+      @limit = limit
     end
 
     def start
@@ -36,8 +37,8 @@ module Grimes
       Thread.current[:grimes_all_paths] = all_paths
     end
 
-    def self.start(time, track_block)
-      @instance = new(time, track_block)
+    def self.start(time, track_block, limit = 10000)
+      @instance = new(time, track_block, limit)
       @instance.start
     end
 
@@ -52,7 +53,9 @@ module Grimes
     def track_data
       begin
         result = calculate_all_paths_from_threads
-        track_block&.call(result)
+        split_result(result, limit).each do |part|
+          track_block&.call(part)
+        end
         reset_all_paths
       rescue StandardError => e
         p e
@@ -74,6 +77,24 @@ module Grimes
         all_paths = Utils::MergeFilePath.merge_paths(all_paths, paths)
       end
       all_paths
+    end
+
+    private
+
+    def split_result(result, limit)
+        parts_num = [(result.size/limit.to_f).ceil, 1].max
+        split_into(result, parts_num)
+    end
+
+    def split_into(hash, divisions)
+      count = 0
+      result = hash.inject([]) do |final, key_value|
+        final[count%divisions] ||= {}
+        final[count%divisions][key_value[0]] = key_value[1]
+        count += 1
+        final
+      end
+      result
     end
   end
 end
