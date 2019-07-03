@@ -53,8 +53,7 @@ module Grimes
     def track_data
       begin
         result = calculate_all_paths_from_threads
-        parts_num = [(result.size/limit.to_f).ceil, 1].max
-        split_into(result, parts_num).each do |part|
+        split_result(result, limit).each do |part|
           track_block&.call(part)
         end
         reset_all_paths
@@ -81,6 +80,12 @@ module Grimes
     end
 
     private
+
+    def split_result(result, limit)
+        parts_num = [(result.size/limit.to_f).ceil, 1].max
+        split_into(result, parts_num)
+    end
+
     def split_into(hash, divisions)
       count = 0
       result = hash.inject([]) do |final, key_value|
