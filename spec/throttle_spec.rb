@@ -13,10 +13,23 @@ describe Grimes::Throttle do
 
   after { described_class.flush_buffer }
 
-  it 'can start and call track_block every "time" second pass' do
-    described_class.start(time, track_block)
-    sleep 0.2
-    expect(track_log.size >= 2).to be_truthy
+  context 'track is call' do
+    it 'can start and call track_block every "time" second pass' do
+      described_class.start(time, track_block)
+      described_class.track('file_path_1')
+      sleep 0.1
+      described_class.track('file_path_1')
+      sleep 0.1
+      expect(track_log.size >= 2).to be_truthy
+    end
+  end
+
+  context 'nothing tracked' do
+    it 'can start and call track_block every "time" second pass' do
+      described_class.start(time, track_block)
+      sleep 0.2
+      expect(track_log.size).to eq(0)
+    end
   end
 
   it 'track path info and call track_block with that data' do
