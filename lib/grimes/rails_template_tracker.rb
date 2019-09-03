@@ -1,6 +1,7 @@
 module ActionView
   class TemplateRenderer
     alias original_render_template render_template
+    alias original_find_layout find_layout
 
     private
 
@@ -31,10 +32,14 @@ module ActionView
 
   class PartialRenderer
     alias original_render render
+    alias original_find_template find_template
 
     def render(context, options, block)
       result = original_render(context, options, block)
       identifier = (@template = find_partial) ? @template.identifier : @path
+      # Collection render will return nil identifier so no need to track
+      return result unless identifier
+
       template_path = identifier.sub(Grimes.config.app_root, '')
       callback_block = Grimes.config.render_partial_block
       callback_block&.call(file_path: template_path)
@@ -42,6 +47,18 @@ module ActionView
     rescue StandardError => error
       Grimes.config.report_bug(error)
       original_render(context, options, block)
+    end
+
+    def find_template(path, locals)
+      prefixes = path.include?(?/) ? [] : @lookup_context.prefixes
+      layout = @lookup_context.find_template(path, prefixes, true, locals, @details)
+      layout_path = layout.inspect
+      callback_block = Grimes.config.render_partial_block
+      callback_block&.call(file_path: layout_path)
+      layout
+    rescue StandardError => error
+      Grimes.config.report_bug(error)
+      original_find_template(path, locals)
     end
   end
 end
