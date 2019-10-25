@@ -9,8 +9,13 @@ module ActionController
       }
       controller_name = raw_payload[:controller]
       action_name = raw_payload[:action]
-      path_location = Object.const_get(controller_name).instance_method(action_name.to_sym).source_location.first
-      file_path = path_location.sub(Grimes.config.app_root, '')
+      file_path = ''
+      controller_klass = Object.const_get(controller_name)
+      if controller_klass.instance_methods.find_index(action_name.to_sym)
+        path_location = controller_klass.instance_method(action_name.to_sym).source_location.first
+        file_path = path_location.sub(Grimes.config.app_root, '')
+      end
+
       callback_block = Grimes.config.render_controller_block
       callback_block&.call(controller_name: controller_name,
                            action_name: action_name,
