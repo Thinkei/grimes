@@ -10,11 +10,11 @@ module ActionView
         template_path = template.identifier.sub(Grimes.config.app_root, '')
         callback_block = Grimes.config.render_template_block
         callback_block&.call(file_path: template_path)
-        original_render_template(template, layout_name, locals)
-      rescue StandardError => error
-        Grimes.config.report_bug(error)
-        original_render_template(template, layout_name, locals)
+      rescue StandardError => e
+        Grimes.config.report_bug(e)
+        return original_render_template(template, layout_name, locals)
       end
+      original_render_template(template, layout_name, locals)
     end
 
     def find_layout(layout, keys)
@@ -23,6 +23,8 @@ module ActionView
         callback_block = Grimes.config.render_template_block
         callback_block&.call(file_path: layout.inspect)
         layout
+      rescue ActionView::ActionViewError
+        original_find_layout(layout, keys)
       rescue StandardError => error
         Grimes.config.report_bug(error)
         original_find_layout(layout, keys)
@@ -36,17 +38,21 @@ module ActionView
 
     def render(context, options, block)
       result = original_render(context, options, block)
-      identifier = (@template = find_partial) ? @template.identifier : @path
-      # Collection render will return nil identifier so no need to track
-      return result unless identifier
+      begin
+        identifier = (@template = find_partial) ? @template.identifier : @path
+        # Collection render will return nil identifier so no need to track
+        return result unless identifier
 
-      template_path = identifier.sub(Grimes.config.app_root, '')
-      callback_block = Grimes.config.render_partial_block
-      callback_block&.call(file_path: template_path)
-      result
-    rescue StandardError => error
-      Grimes.config.report_bug(error)
-      original_render(context, options, block)
+        template_path = identifier.sub(Grimes.config.app_root, '')
+        callback_block = Grimes.config.render_partial_block
+        callback_block&.call(file_path: template_path)
+        result
+      rescue ActionView::ActionViewError
+        original_render(context, options, block)
+      rescue StandardError => error
+        Grimes.config.report_bug(error)
+        original_render(context, options, block)
+      end
     end
 
     def find_template(path, locals)
@@ -56,6 +62,8 @@ module ActionView
       callback_block = Grimes.config.render_partial_block
       callback_block&.call(file_path: layout_path)
       layout
+    rescue ActionView::ActionViewError
+      original_find_template(path, locals)
     rescue StandardError => error
       Grimes.config.report_bug(error)
       original_find_template(path, locals)
