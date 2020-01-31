@@ -5,7 +5,7 @@ module Grimes
     def before
       route = self.env["api.endpoint"].routes.first
       action = get_controller_action(route)
-      source_location = get_controller_file_location(route)
+      source_location = get_controller_file_location(route).sub(Grimes.config.app_root, '')
       callback_block = Grimes.config.call_grape_controller_block
       callback_block&.call({ file_path: source_location, action_name: action })
     rescue StandardError => e
